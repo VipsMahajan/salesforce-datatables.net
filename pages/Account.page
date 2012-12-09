@@ -4,9 +4,12 @@
 <apex:includeScript value="{!$Resource.datatables}"/>
 
 <script>
-$(document).ready(function(){
-	$('#example').dataTable();
-});
+$(document).ready(function() {
+	$('#example').dataTable( {
+		"bProcessing": true,
+		"sAjaxSource": '{!$Resource.ajaxResponse}'
+	} );
+} );
 </script>
 <body id="dt_example">
     <div id="container">
