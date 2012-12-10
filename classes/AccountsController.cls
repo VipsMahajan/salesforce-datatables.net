@@ -4,26 +4,25 @@ public with sharing class AccountsController {
 	public string listView {get; set;}
 	
 	public AccountsController(){
-		this.ssc = new ApexPages.StandardSetController(Database.getQueryLocator([SELECT Id, Name, Owner.Name, Type, CreatedDate FROM Account]));
-		this.listView = this.ssc.getFilterId();
-		this.ssc.setFilterId('00Bd0000004qhnWEAQ');
-		this.ssc.setFilterId('00Bd0000003nkB7');
+		ssc = new ApexPages.StandardSetController(Database.getQueryLocator([SELECT Id, Name, Owner.Name, Type, CreatedDate FROM Account]));
+		listView = '00Bd0000003nkB7EAI';
+		//listView = ssc.getFilterId(); this doesn't seem to be working
 	}
 	
 	public List<SelectOption> getListViews(){
-		return this.ssc.getListViewOptions();
+		return ssc.getListViewOptions();
 	}
 	
 	public List<Account> getAccounts(){
-		this.ssc.setPageSize(2000);
-		this.ssc.setFilterId(this.listView);
-		this.ssc.setPageNumber(1);
-		return (List<Account>) this.ssc.getRecords();
+		ssc.setPageSize(2000);
+		ssc.setFilterId(listView);
+		ssc.setPageNumber(1);
+		return (List<Account>) ssc.getRecords();
 	}
 	
 	public void doNothing(){
 	}
 	public string getWhatIsIt(){
-		return this.ssc.getFilterId();
+		return ssc.getFilterId();
 	}
 }
