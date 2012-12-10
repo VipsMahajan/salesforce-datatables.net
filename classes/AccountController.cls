@@ -11,7 +11,7 @@ public with sharing class AccountController {
 	}
 	
 	public List<Account> getAccounts(){
-		return [SELECT Id, Name, Owner.Name, Description FROM Account LIMIT 1000];
+		return [SELECT Id, Name, Owner.Name, Description, CreatedDate, Type FROM Account LIMIT 5000];
 	}
 
 }
