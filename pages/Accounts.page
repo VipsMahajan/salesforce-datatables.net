@@ -1,0 +1,73 @@
+<apex:page controller="AccountsController">
+<apex:includeScript value="https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"/>
+<apex:includeScript value="https://ajax.googleapis.com/ajax/libs/jqueryui/1.9.2/jquery-ui.min.js"/>
+<apex:includeScript value="{!$Resource.datatables}"/>
+<apex:stylesheet value="{!URLFOR($Resource.mycss, 'css/redmond/jquery-ui-1.9.2.custom.css')}"/>
+<style>
+.dataTables_filter label{
+ float: left
+}
+.dataTables_filter input{
+ width: 200px
+}
+.dataTables_length label{
+ float: right
+}
+.paging_two_button{
+ float: right
+}
+.dataTables_info {
+  float: left
+}
+.DataTables_sort_wrapper {
+  position: relative;
+}
+</style>
+<apex:form >
+<apex:selectList value="{!listView}" size="1">
+    <apex:selectOptions value="{!ListViews}"/>
+</apex:selectList>
+	<apex:commandButton value="Change View" reRender="theTable" action="{!doNothing}" onclick="destroyTable();" oncomplete="redoTable();"/>
+</apex:form>
+<apex:pageBlock >
+	<apex:pageBlockTable value="{!accounts}" var="account" id="theTable" styleClass="display dataTable">
+		<apex:column >
+		  <apex:facet name="header">Name</apex:facet>
+		  <apex:outputLink value="/{!account.id}">{!account.Name}</apex:outputLink>
+		  <!--  HIDDEN FIELD(S) FOR CLIENT SIDE SEARCH -->
+		  <!-- <apex:outputText value="{!account.description}" style="display: None"/> -->
+	 	</apex:column> 
+		<apex:column value="{!account.type}"/> 
+		<apex:column >
+			<apex:facet name="header">Created Date</apex:facet>
+			<apex:outputField value="{!account.createdDate}"/> 
+		</apex:column>
+	    <apex:column value="{!account.owner.name}"/> 
+	</apex:pageBlockTable>
+</apex:pageBlock>
+{!WhatIsIt}
+<div id="refreshingView">
+the view is refreshing.
+</div>
+ <script>
+$(document).ready(function() {
+	redoTable();
+} );
+
+function destroyTable(){
+	$('[id$=theTable]').dataTable().fnDestroy();
+	$('[id$=refreshingView]').show();
+	$('[id$=theTable]').hide();
+}
+function redoTable() {
+	$('[id$=theTable]').dataTable({
+		"iDisplayLength":25,
+		"bJQueryUI": true,
+		"fnDrawCallback": function() {
+      			$('[id$=theTable]').show();
+				$('[id$=refreshingView]').hide();
+		}
+	});
+}
+</script>
+</apex:page>

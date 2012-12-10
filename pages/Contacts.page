@@ -1,0 +1,66 @@
+<apex:page controller="ContactsController">
+<apex:includeScript value="https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"/>
+<apex:includeScript value="https://ajax.googleapis.com/ajax/libs/jqueryui/1.9.2/jquery-ui.min.js"/>
+<apex:includeScript value="{!$Resource.datatables}"/>
+<apex:stylesheet value="{!URLFOR($Resource.mycss, 'css/redmond/jquery-ui-1.9.2.custom.css')}"/>
+<style>
+.dataTables_filter label{
+ float: left
+}
+.dataTables_filter input{
+ width: 200px
+}
+.dataTables_length label{
+ float: right
+}
+.paging_two_button{
+ float: right
+}
+.dataTables_info {
+  float: left
+}
+.DataTables_sort_wrapper {
+  position: relative;
+}
+</style>
+<apex:form >
+       <apex:selectList value="{!listView}" size="1">
+           <apex:selectOptions value="{!ListViews}"/>
+       </apex:selectList>
+	<apex:commandButton value="Change View" reRender="theTable" action="{!doNothing}" onclick="destroyTable();" oncomplete="redoTable();"/>
+</apex:form>
+<apex:pageBlock >
+	<apex:pageBlockTable value="{!contacts}" var="contact" id="theTable" styleClass="display dataTable">
+		<apex:column >
+		  <apex:facet name="header">Name</apex:facet>
+		  <apex:outputLink value="/{!contact.id}">{!contact.Name}</apex:outputLink>
+		  <!--  HIDDEN FIELD(S) FOR CLIENT SIDE SEARCH -->
+		  <!-- <apex:outputText value="{!account.description}" style="display: None"/> -->
+	 	</apex:column> 
+	</apex:pageBlockTable>
+</apex:pageBlock>
+<div id="refreshingView">
+the view is refreshing.
+</div>
+ <script>
+$(document).ready(function() {
+	redoTable();
+} );
+
+function destroyTable(){
+	$('[id$=theTable]').dataTable().fnDestroy();
+	$('[id$=refreshingView]').show();
+	$('[id$=theTable]').hide();
+}
+function redoTable() {
+	$('[id$=theTable]').dataTable({
+		//"iDisplayLength":20,
+		"bJQueryUI": true,
+		"fnDrawCallback": function() {
+      			$('[id$=theTable]').show();
+				$('[id$=refreshingView]').hide();
+		}
+	});
+}
+</script>
+</apex:page>
