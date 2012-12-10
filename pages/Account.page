@@ -24,12 +24,18 @@
 }
 </style>
 <apex:pageBlock >
+	<apex:form >
+        <apex:selectList value="{!view}" size="1">
+            <apex:selectOptions value="{!views}"/>
+        </apex:selectList>
+		<apex:commandButton value="Change View" reRender="theTable" action="{!doNothing}" onclick="destroyTable();" oncomplete="redoTable();"/>
+	</apex:form>
 	<apex:pageBlockTable value="{!accounts}" var="account" id="theTable" styleClass="display dataTable">
 		<apex:column >
 		  <apex:facet name="header">Name</apex:facet>
 		  <apex:outputLink value="/{!account.id}">{!account.Name}</apex:outputLink>
-		  <!--  HIDDEN FIELD FOR CLIENT SIDE SEARCH -->
-		  <apex:outputText value="{!account.description}" style="display: None"/>
+		  <!--  HIDDEN FIELD(S) FOR CLIENT SIDE SEARCH -->
+		  <!-- <apex:outputText value="{!account.description}" style="display: None"/> -->
 	 	</apex:column> 
 		<apex:column value="{!account.type}"/> 
 		<apex:column >
@@ -39,13 +45,29 @@
 	    <apex:column value="{!account.owner.name}"/> 
 	</apex:pageBlockTable>
 </apex:pageBlock>
+<div id="refreshingView">
+the view is refreshing.
+</div>
 
  <script>
 $(document).ready(function() {
-	$('[id$=theTable]').dataTable({
-		"iDisplayLength":50,
-		"bJQueryUI": true
-	});
+	redoTable();
 } );
+
+function destroyTable(){
+	$('[id$=theTable]').dataTable().fnDestroy();
+	$('[id$=refreshingView]').show();
+	$('[id$=theTable]').hide();
+}
+function redoTable() {
+	$('[id$=theTable]').dataTable({
+		//"iDisplayLength":20,
+		"bJQueryUI": true,
+		"fnDrawCallback": function() {
+      			$('[id$=theTable]').show();
+				$('[id$=refreshingView]').hide();
+		}
+	});
+}
 </script>
 </apex:page>
